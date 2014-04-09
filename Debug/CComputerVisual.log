@@ -1,12 +1,9 @@
-﻿生成启动时间为 4/8/2014 11:02:13 PM。
+﻿生成启动时间为 4/9/2014 11:07:59 PM。
      1>项目“D:\C++\WorkSpace\SunSystem\CComputerVisual\CComputerVisual.vcxproj”在节点 2 上(Build 个目标)。
      1>ClCompile:
-         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Gussian.cpp
-         Gussian.cpp
-     1>d:\c++\workspace\sunsystem\ccomputervisual\gussian.cpp(11): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>d:\c++\workspace\sunsystem\ccomputervisual\gussian.cpp(11): warning C4305: “参数”: 从“double”到“float”截断
-     1>d:\c++\workspace\sunsystem\ccomputervisual\gussian.cpp(12): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>d:\c++\workspace\sunsystem\ccomputervisual\gussian.cpp(23): warning C4244: “参数”: 从“const int”转换到“float”，可能丢失数据
+         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
+         main.cpp
+     1>d:\c++\workspace\sunsystem\ccomputervisual\main.cpp(8): warning C4101: “point”: 未引用的局部变量
        Link:
          D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\C++\WorkSpace\SunSystem\Debug\CComputerVisual.exe" /INCREMENTAL /NOLOGO opencv_core248d.lib opencv_core248.lib opencv_imgproc248d.lib opencv_highgui248d.lib opencv_ml248d.lib opencv_video248d.lib opencv_calib3d248d.lib opencv_objdetect248d.lib opencv_contrib248d.lib opencv_legacy248d.lib opencv_flann248d.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\C++\WorkSpace\SunSystem\Debug\CComputerVisual.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\C++\WorkSpace\SunSystem\Debug\CComputerVisual.lib" /MACHINE:X86 Debug\FFT.obj
          Debug\Gussian.obj
@@ -16,4 +13,4 @@
 
 生成成功。
 
-已用时间 00:00:02.58
+已用时间 00:00:01.99

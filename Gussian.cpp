@@ -16,6 +16,11 @@ double NormalCurve(double x, double y, double u){
 //高斯模糊算法
 Mat Gussian(Mat image, const int radius, double u){
 
+
+	//如果radius大于10，退出
+	if (radius > 10){
+		return image;
+	}
 	//计算模糊半径
 	Vector<cv::Point2f> points;
 	for (int i = 0; i < radius * 2 + 1; i++){
@@ -24,36 +29,63 @@ Mat Gussian(Mat image, const int radius, double u){
 		}
 	}
 	for (Point2f ff : points){
-		cout << ff << endl;
+		//cout << ff << endl;
 	}
 	//权重矩阵计算
-	Mat m(radius * 2 + 1, radius * 2 + 1, CV_64FC2, 1);
+	Mat weight(radius * 2 + 1, radius * 2 + 1, CV_64FC1, 1);
 	for (int i = 0; i <radius * 2 + 1; i++){
-		double* p = m.ptr<double>(i);
+		double* p = weight.ptr<double>(i);
 		for (int j = 0; j < radius * 2 + 1; j++){
 			p[j] = NormalCurve(points[i*(radius*2+1)+j].x,points[i*(radius*2+1)+j].y,u);
 		}
 	}
 
 	//计算高斯模糊加权平均值
-	double sum=0;
+	double avg_sum=0;
 	for (int i = 0; i < radius * 2 + 1; i++){
-		double* p = m.ptr<double>(i);
+		double* p = weight.ptr<double>(i);
 		for (int j = 0; j < radius * 2 + 1; j++){
-			sum = sum + p[j];
+			avg_sum = avg_sum + p[j];
 		}
 	}
 
 	for (int i = 0; i < radius * 2 + 1; i++){
-		double* p = m.ptr<double>(i);
+		double* p = weight.ptr<double>(i);
 		for (int j = 0; j < radius * 2 + 1; j++){
-			p[j] = p[j] / sum;
+			p[j] = p[j] / avg_sum;
 		}
 	}
 	
-	cout << m << endl;
-
+	cout << weight << endl;
+	
 	//对图像进行处理
+	Mat dst_image = image.clone();
+	uchar(*p[10]);
+	for (int i = radius; i < image.rows-radius; i++){
 
-	return m;
+		//每次涉及到数据行数
+		for (int ii = 0; ii < radius * 2 + 1; ii++){
+			p[ii]= image.ptr<uchar>(i-radius+ii);
+		}
+
+		uchar* pp = dst_image.ptr<uchar>(i);
+		for (int j = radius; j < image.cols-radius; j++){
+
+			//三个通道分别处理
+			for (int n = 0; n < 3; n++){
+				double sum = 0;
+				//应用高斯过滤算法
+				for (int m = 0; m < radius * 2 + 1; m++){
+
+					for (int q = 0; q < radius * 2 + 1; q++){
+						sum = (int)p[q][(j-radius+m)*3+n] * weight.ptr<double>(q)[m]+sum;
+					}
+				}
+				pp[j * 3 + n] = sum;
+			}
+			
+		}
+	}
+
+	return dst_image;
 }
