@@ -60,7 +60,7 @@ Mat Gussian(Mat image, const int radius, double u){
 	
 	//对图像进行处理
 	Mat dst_image = image.clone();
-	uchar(*p[10]);
+	uchar(*p[21]);
 	for (int i = radius; i < image.rows-radius; i++){
 
 		//每次涉及到数据行数
