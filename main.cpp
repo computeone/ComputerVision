@@ -4,10 +4,6 @@ using namespace std;
 using namespace cv;
 int main(){
 	double d=NormalCurve(0,-1,1.5);
-	cout << d << endl;
-	//Mat image(5, 5, CV_8UC3, 1);
-	//randu(image,Scalar::all(0), Scalar::all(255));
-	//cout << image << endl;
 	Mat image = imread("C:\\Users\\niubaisui-pc\\Pictures\\6512695.jpg");
 	image=Gussian(image, 5, 1.5);
 	imshow("display window", image);
