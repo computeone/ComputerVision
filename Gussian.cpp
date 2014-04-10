@@ -56,7 +56,7 @@ Mat Gussian(Mat image, const int radius, double u){
 		}
 	}
 	
-	cout << weight << endl;
+	//cout << weight << endl;
 	
 	//对图像进行处理
 	Mat dst_image = image.clone();
