@@ -79,10 +79,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Canny.h" />
     <ClInclude Include="FFT.h" />
     <ClInclude Include="Gussian.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Canny.cpp" />
     <ClCompile Include="FFT.cpp" />
     <ClCompile Include="Gussian.cpp" />
     <ClCompile Include="main.cpp" />
