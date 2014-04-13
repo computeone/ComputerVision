@@ -39,7 +39,10 @@ void Gradient(Mat& src, Mat&  xGraid, Mat& yGraid, Mat& Margin, Mat& Thera){
 				//cout <<"dfdf"<< x[j] << endl;
 			}
 			else{
-				a[j] = atan(y[j ] / x[j]);
+				a[j] = atan(y[j ] / x[j])*57.3;
+				if (a[j] < 0){
+					a[j] = a[j] + 360;
+				}
 			}
 			
 		}
@@ -91,8 +94,8 @@ void NonmaxSuppress(Mat& src, Mat& Margin, Mat xGraid, Mat yGraid, Mat& Thera){
 				c
 				g3  g4
 				*/
-				if ((thera[j] >= (0.5*pi)) && (thera[j]<(0.75*pi)) ||
-					((thera[j] >= (2*pi/3)) && (thera[j]<(1.75*pi)))){
+				if ((thera[j] >= 90) && (thera[j]<135) ||
+					((thera[j] >= 270) && (thera[j]<315))){
 					g1 = m1[j - 1];
 					g2 = m1[j];
 					g3 = m2[j ];
@@ -108,8 +111,8 @@ void NonmaxSuppress(Mat& src, Mat& Margin, Mat xGraid, Mat yGraid, Mat& Thera){
 				g2  c	g3
 				g4
 				*/
-				else if (((thera[j] >= (0.75*pi)) && (thera[j]<pi)) ||
-					((thera[j] >= (1.75*pi)) && (thera[j]<(2*pi)))){
+				else if (((thera[j] >= 135) && (thera[j]<180)) ||
+					((thera[j] >= 315) && (thera[j]<360))){
 					g1 = m1[j - 1];
 					g2 = m0[j - 1];
 					g3 = m0[j + 1];
@@ -125,8 +128,8 @@ void NonmaxSuppress(Mat& src, Mat& Margin, Mat xGraid, Mat yGraid, Mat& Thera){
 				c
 				g4	g3
 				*/
-				else if (((thera[j] >= (0.25*pi)) && (thera[j]<(0.5*pi))) ||
-					((thera[j] >= (1.25*pi)) && (thera[j]<(1.75*pi)))){
+				else if (((thera[j] >= 45) && (thera[j]<90)) ||
+					((thera[j] >= 225) && (thera[j]<270))){
 					g1 = m1[j];
 					g2 = m1[j + 1];
 					g3 = m2[j];
@@ -142,8 +145,8 @@ void NonmaxSuppress(Mat& src, Mat& Margin, Mat xGraid, Mat yGraid, Mat& Thera){
 				g4	c	g2
 				g3
 				*/
-				else if (((thera[j] >= 0) && (thera[j]<(0.25*pi))) ||
-					((thera[j] >= pi) && (thera[j]<(1.25*pi)))){
+				else if (((thera[j] >= 0) && (thera[j]<45)) ||
+					((thera[j] >= 180) && (thera[j]<225))){
 					g1 = m1[j + 1];
 					g2 = m0[j + 1];
 					g3 = m2[j - 1];
@@ -165,6 +168,102 @@ void NonmaxSuppress(Mat& src, Mat& Margin, Mat xGraid, Mat yGraid, Mat& Thera){
 		}
 	}
 }
+void DualThresholdDetect(Mat& src,Mat& Margin){
+
+	int nHist[1024];   //灰度直方图
+	int nEdgeNum;      //可能边界数
+	int nMaxMag = 0;	//最大梯度数
+	int nHighCount;
+
+	//构造灰度图的统计直方图
+	for (int i = 0; i < 1024; i++){
+		nHist[i] = 0;
+	}
+
+	for (int i = 0; i < src.rows; i++){
+		double* p = src.ptr<double>(i);
+		for (int j = 0; j < src.cols; j++){
+			if (p[j] == 128){
+				nHist[(int)p[j]]++;
+			}
+		}
+	}
+
+
+	//获取最大梯度幅值及潜在的边缘点个数
+	nEdgeNum = nHist[0];
+	nMaxMag = 0;
+	for (int i = 0; i < 1024; i++){
+		if (nHist[i] != 0){
+			nMaxMag = i;
+		}
+		nEdgeNum += nHist[i];
+	}
+
+	cout << "MaxMag:" << nMaxMag << endl;
+	cout << "nEdgeNum:" << nEdgeNum << endl;
+
+	//计算双阀值
+	double RatHigh = 0.79;
+	double ThrHigh;
+	double ThrLow;
+	double RatLow = 0.5;
+	nHighCount = (int)(RatHigh*nEdgeNum + 0.5);
+	int k = 1;
+	nEdgeNum = nHist[1];
+	while ((k < nMaxMag - 1) && (nEdgeNum < nHighCount)){
+		k++;
+		nEdgeNum += nHist[k];
+	}
+
+	ThrHigh = k;
+	ThrLow = (int)((ThrHigh)*RatLow + 0.5);
+
+
+	//进行边缘检测
+	for (int i = 0; i < src.rows; i++){
+		double* p = src.ptr<double>(i);
+		double* m = Margin.ptr<double>(i);
+		for (int j = 0; j < src.cols; j++){
+			if ((p[j]== 128) && (m[j]>ThrHigh)){
+				p[j] = 255;
+				TraceEdge(j, i, ThrLow, src, Margin);
+			}
+		}
+	}
+
+	//删除非边界点
+	for (int i = 0; i < src.rows; i++){
+		double* p = src.ptr<double>(i);
+		for (int j = 0; j < src.cols; j++){
+			if (p[j] != 255){
+				//p[j] = 0;
+			}
+		}
+	}
+}
+void TraceEdge(int y, int x, int nThrLow, Mat& src,Mat& Margin){
+	
+	//对8邻域像素进行查询
+	int xNum[8] = { 1, 1, 0, -1, -1, 0, 1};
+	int yNum[8] = { 0, 1, 1, 1, 0, -1, -1, -1 };
+
+	long yy, xx, k;
+	for (k = 0; k < 8; k++){
+
+		yy = y + yNum[k];
+		xx = x + xNum[k];
+		double* p = src.ptr<double>(x);
+		double* m = Margin.ptr<double>(x);
+		if ((p[y]==128)&&(m[y]>nThrLow)){
+
+			//以该点为边界点
+			p[y] = 255;
+			//以该点为中心访问继续访问8邻域
+			TraceEdge(yy, xx, nThrLow, src, Margin);
+		}
+	}
+}
 Mat Canny(Mat src){
 
 	//原始图像灰度化
@@ -172,7 +271,7 @@ Mat Canny(Mat src){
 	//高斯滤波
 	dst = Gussian(dst, 1, 1);	
 	//有限差分确定梯度幅值和方向
-	Mat m(dst.rows , dst.cols , CV_64FC1);
+	Mat gray(dst.rows , dst.cols , CV_64FC1);
 	Mat xGraid(dst.rows, dst.cols, CV_64FC1);
 	Mat yGraid(dst.rows, dst.cols, CV_64FC1);
 	Mat Margin(dst.rows, dst.cols, CV_64FC1);
@@ -181,24 +280,24 @@ Mat Canny(Mat src){
 	//复制dst图像中的三个通道中的一个到m中
 	for (int i = 0; i < dst.rows; i++){
 		uchar* p = dst.ptr<uchar>(i);
-		double* mm = m.ptr<double>(i);
+		double* mm = gray.ptr<double>(i);
 		for (int j = 0; j < dst.cols; j++){
 			mm[j] = p[j * 3];
 		}
 	}
 
 
-	Gradient(m, xGraid, yGraid, Margin, Thera);
+	Gradient(gray, xGraid, yGraid, Margin, Thera);
 	//非极大值抑制
-	NonmaxSuppress(m, Margin, xGraid, yGraid, Thera);
-	//设置图像边界不是边缘
+	NonmaxSuppress(gray, Margin, xGraid, yGraid, Thera);
 
 	//双阀值检测和边缘连接
+	DualThresholdDetect(gray,Margin);
 
 	//复原图像为rgb格式
 	for (int i = 0; i < dst.rows; i++){
 		uchar* p = dst.ptr<uchar>(i);
-		double* mm = m.ptr<double>(i);
+		double* mm = gray.ptr<double>(i);
 		for (int j = 0; j < dst.cols; j++){
 			p[j * 3] = mm[j];
 			p[j * 3 + 1] = mm[j];
