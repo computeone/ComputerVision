@@ -9,7 +9,7 @@ Mat waveLet(Mat src){
 	Mat dst = src.clone();
 	int m = 0;
 
-	//½øĞĞĞĞ±ä»»
+	//è¿›è¡Œè¡Œå˜æ¢
 	for (int i = 0; i < src.rows; i++){
 
 		uchar* p = src.ptr<uchar>(i);
@@ -29,7 +29,7 @@ Mat waveLet(Mat src){
 	}
 
 
-	//½øĞĞÁĞ±ä»»
+	//è¿›è¡Œåˆ—å˜æ¢
 	for (int i = 0; i < src.cols; i++){
 		int mid = src.rows / 2;
 		for (int j = 0; j < src.rows-2; j = j + 2){

@@ -9,7 +9,7 @@ double realCompute(Mat src, double u, double v){
 	int M = src.rows;
 	int N = src.cols;
 	double real = 0;
-	//º∆À„ µ≤ø
+	//
 	for (int i = 0; i < src.rows; i++){
 		uchar* p = src.ptr<uchar>(i);
 		for (int j = 0; j < src.cols; j++){
@@ -26,7 +26,7 @@ double imgCompute(Mat src, double u, double v){
 	int M = src.rows;
 	int N = src.cols;
 	double img = 0;
-	//º∆À„–È≤ø
+	//
 	for (int i = 0; i < src.rows; i++){
 		uchar* p = src.ptr<uchar>(i);
 		for (int j = 0; j < src.cols; j++){
@@ -43,7 +43,7 @@ Mat DFT(Mat src){
 	Mat dst = src.clone();
 	double c = rows*cols;
 	cout << src << endl;
-	//º∆À„DFT
+	//
 	for (int i = 0; i < rows; i++){
 		uchar* p = src.ptr<uchar>(i);
 		uchar* d = dst.ptr<uchar>(i);
@@ -56,7 +56,7 @@ Mat DFT(Mat src){
 	}
 	cout << dst << endl;
 	
-	//ª÷∏¥ÕºœÒ
+	//
 	for (int i = 0; i < dst.rows; i++){
 		uchar* p = dst.ptr<uchar>(i);
 		for (int j = 0; j < dst.cols; j++){
@@ -67,7 +67,7 @@ Mat DFT(Mat src){
 
 	cout << dst << endl;
 
-	//“∆∆µ
+	//
 	return dst;
 }
 

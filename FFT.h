@@ -10,11 +10,9 @@ using namespace cv;
 double realCompute(Mat src,double u,double v);
 double imgCompute(Mat src,double u,double v);
 /*
-DFTÀ„∑®
 */
 Mat DFT(Mat src);
 
 /*
-FFTÀ„∑®
 */
 Mat FFT(Mat src);
